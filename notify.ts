@@ -28,7 +28,7 @@ interface SubagentResult {
 }
 
 export default function registerSubagentNotify(pi: ExtensionAPI): void {
-	const seen = getGlobalSeenMap("__pi_subagents_notify_seen__");
+	const seen = getGlobalSeenMap("__pi_minions_notify_seen__");
 	const ttlMs = 10 * 60 * 1000;
 
 	const handleComplete = (data: unknown) => {

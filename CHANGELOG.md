@@ -540,8 +540,8 @@
 ## [0.2.0] - 2026-01-24
 
 ### Changed
-- **Rebranded to `pi-subagents`** (was `pi-async-subagents`)
-- Now installable via `npx pi-subagents`
+- **Rebranded to `pi-subagents` (now forked as `pi-minions`)** (was `pi-async-subagents`)
+- Now installable via `npx pi-minions`
 
 ### Added
 - Chain TUI now supports editing output paths, reads lists, and toggling progress per step

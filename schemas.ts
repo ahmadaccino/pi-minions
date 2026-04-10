@@ -49,7 +49,7 @@ export const ParallelStepSchema = Type.Object({
 	concurrency: Type.Optional(Type.Number({ description: "Max concurrent tasks (default: 4)" })),
 	failFast: Type.Optional(Type.Boolean({ description: "Stop on first failure (default: false)" })),
 	worktree: Type.Optional(Type.Boolean({
-		description: "Create isolated git worktrees for each parallel task."
+		description: "Create isolated git worktrees for each parallel task. Default: true."
 	})),
 });
 
@@ -76,12 +76,12 @@ export const SubagentParams = Type.Object({
 	worktree: Type.Optional(Type.Boolean({
 		description: "Create isolated git worktrees for each parallel task. " +
 			"Prevents filesystem conflicts. Requires clean git state. " +
-			"Per-worktree diffs included in output."
+			"Per-worktree diffs included in output. Default: true."
 	})),
 	autoMerge: Type.Optional(Type.Boolean({
 		description: "When using worktree isolation, automatically apply and merge all worktree patches " +
 			"back into the main branch after tasks complete. Attempts to auto-resolve additive conflicts " +
-			"(where multiple tasks add to the same file in different regions). Default: false."
+			"(where multiple tasks add to the same file in different regions). Default: true."
 	})),
 	chain: Type.Optional(Type.Array(ChainItem, { description: "CHAIN mode: sequential pipeline where each step's response becomes {previous} for the next. Use {task}, {previous}, {chain_dir} in task templates." })),
 	context: Type.Optional(Type.String({

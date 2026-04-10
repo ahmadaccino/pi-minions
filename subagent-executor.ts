@@ -797,7 +797,7 @@ async function runParallelPath(data: ExecutionContextData, deps: ExecutorDeps): 
 	const liveResults: (SingleResult | undefined)[] = new Array(tasks.length).fill(undefined);
 	const liveProgress: (AgentProgress | undefined)[] = new Array(tasks.length).fill(undefined);
 	const { setup: worktreeSetup, errorResult } = createParallelWorktreeSetup(
-		params.worktree,
+		params.worktree ?? true,
 		effectiveCwd,
 		runId,
 		tasks,
@@ -846,7 +846,7 @@ async function runParallelPath(data: ExecutionContextData, deps: ExecutorDeps): 
 			if (result.artifactPaths) allArtifactPaths.push(result.artifactPaths);
 		}
 
-		const worktreeSuffix = buildParallelWorktreeSuffix(worktreeSetup, artifactsDir, tasks, params.autoMerge);
+		const worktreeSuffix = buildParallelWorktreeSuffix(worktreeSetup, artifactsDir, tasks, params.autoMerge ?? true);
 		const ok = results.filter((result) => result.exitCode === 0).length;
 		const downgradeNote = parallelDowngraded ? " (async not supported for parallel)" : "";
 		const aggregatedOutput = aggregateParallelOutputs(

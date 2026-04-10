@@ -254,9 +254,9 @@ export default function registerSubagentExtension(pi: ExtensionAPI): void {
 EXECUTION (use exactly ONE mode):
 • SINGLE: { agent, task } - one task
 • CHAIN: { chain: [{agent:"scout"}, {parallel:[{agent:"worker",count:3}]}] } - sequential pipeline with optional parallel fan-out
-• PARALLEL: { tasks: [{agent,task,count?}, ...], worktree?: true } - concurrent execution (worktree: isolate each task in a git worktree)
+• PARALLEL: { tasks: [{agent,task,count?}, ...] } - concurrent execution (worktree isolation + auto-merge ON by default)
 • Optional context: { context: "fresh" | "fork" } (default: "fresh")
-• Auto-merge: when using worktree, add autoMerge: true to auto-apply patches back to main branch
+• Worktree + auto-merge are on by default for parallel tasks. Set worktree: false to disable.
 
 CHAIN TEMPLATE VARIABLES (use in task strings):
 • {task} - The original task/request from the user
