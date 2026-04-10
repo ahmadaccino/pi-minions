@@ -34,6 +34,12 @@ import {
 	type WorktreeSetup,
 } from "./worktree.js";
 import {
+	analyzeWorktreeMerge,
+	applyWorktreePatches,
+	formatMergeAnalysis,
+	formatApplyResult,
+} from "./worktree-merge.js";
+import {
 	type AgentProgress,
 	type ArtifactConfig,
 	type ArtifactPaths,
@@ -70,6 +76,7 @@ export interface SubagentParamsLike {
 	chain?: ChainStep[];
 	tasks?: TaskParam[];
 	worktree?: boolean;
+	autoMerge?: boolean;
 	context?: "fresh" | "fork";
 	async?: boolean;
 	clarify?: boolean;
@@ -591,11 +598,24 @@ function buildParallelWorktreeSuffix(
 	worktreeSetup: WorktreeSetup | undefined,
 	artifactsDir: string,
 	tasks: TaskParam[],
+	autoMerge?: boolean,
 ): string {
 	if (!worktreeSetup) return "";
 	const diffsDir = path.join(artifactsDir, "worktree-diffs");
 	const diffs = diffWorktrees(worktreeSetup, tasks.map((task) => task.agent), diffsDir);
-	return formatWorktreeDiffSummary(diffs);
+	let result = formatWorktreeDiffSummary(diffs);
+
+	// Analyze merge complexity
+	const analysis = analyzeWorktreeMerge(diffs);
+	result += formatMergeAnalysis(analysis);
+
+	// Auto-apply patches if requested
+	if (autoMerge) {
+		const applyResult = applyWorktreePatches(worktreeSetup.cwd, diffs, analysis);
+		result += formatApplyResult(applyResult);
+	}
+
+	return result;
 }
 
 async function runForegroundParallelTasks(input: ForegroundParallelRunInput): Promise<SingleResult[]> {
@@ -826,7 +846,7 @@ async function runParallelPath(data: ExecutionContextData, deps: ExecutorDeps): 
 			if (result.artifactPaths) allArtifactPaths.push(result.artifactPaths);
 		}
 
-		const worktreeSuffix = buildParallelWorktreeSuffix(worktreeSetup, artifactsDir, tasks);
+		const worktreeSuffix = buildParallelWorktreeSuffix(worktreeSetup, artifactsDir, tasks, params.autoMerge);
 		const ok = results.filter((result) => result.exitCode === 0).length;
 		const downgradeNote = parallelDowngraded ? " (async not supported for parallel)" : "";
 		const aggregatedOutput = aggregateParallelOutputs(

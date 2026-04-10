@@ -78,6 +78,11 @@ export const SubagentParams = Type.Object({
 			"Prevents filesystem conflicts. Requires clean git state. " +
 			"Per-worktree diffs included in output."
 	})),
+	autoMerge: Type.Optional(Type.Boolean({
+		description: "When using worktree isolation, automatically apply and merge all worktree patches " +
+			"back into the main branch after tasks complete. Attempts to auto-resolve additive conflicts " +
+			"(where multiple tasks add to the same file in different regions). Default: false."
+	})),
 	chain: Type.Optional(Type.Array(ChainItem, { description: "CHAIN mode: sequential pipeline where each step's response becomes {previous} for the next. Use {task}, {previous}, {chain_dir} in task templates." })),
 	context: Type.Optional(Type.String({
 		enum: ["fresh", "fork"],
